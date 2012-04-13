@@ -1,0 +1,143 @@
+<!doctype html> 
+<html> 
+	<head> 
+		<title>1K Marble Solitaire</title> 
+		<meta charset="utf-8" /> 
+	</head> 
+	<body> 
+		<canvas id="c"></canvas> 
+		<script> 
+			var b = document.body;
+			var c = document.getElementsByTagName('canvas')[0];
+			var a = c.getContext('2d');
+			document.body.clientWidth; // fix bug in webkit: http://qfox.nl/weblog/218
+		</script> 
+		<script> 
+		// start of submission //
+		(function () {
+	    	
+			//variables
+			var doc = document,
+				creatElem = 'createElement',
+				className = 'className',
+				appendChild = 'appendChild',
+				getElementById = 'getElementById',
+				marble = doc[creatElem]("a"),
+				background = "background:",
+				style = 'style',
+				newRow,
+				newCol,
+				newMarble,
+				prevElem = {},
+				prevElemRow,
+				prevElemCol,
+			    styleElem = doc[creatElem](style),
+			    css = doc.createTextNode('a{width:34px;height:34px;margin:4px;cursor:pointer;' + background + '#333;float:left;border-radius:34px}.m{' + background + '#cc6;}a:hover{opacity:.5;}.s{' + background + '#d90}canvas{height:0}'),
+				counter = 0,
+				
+				clickMarble = function(e){
+					var elem = e.target,
+						elemId = elem.id,
+						elemRow = elemId.charAt(0) - 0,
+						elemCol = elemId.charAt(1) - 0,
+						midElem,
+						
+						comparison = function(arg1, arg3, arg4, arg5, arg6){
+							if (arg1 && arg3 == arg4 + arg5 + arg6){
+								midElem = doc[getElementById]((elemRow+arg5/2)+""+(elemCol+arg6/2));
+							}
+						};
+				
+					//if elem contains class m (for marble) then select marble
+					if (elem[className].indexOf('m') != -1){
+						prevElem[className] = 'm';
+						elem[className] = 'm s';
+						
+						prevElemRow = elemRow;
+						prevElemCol = elemCol;
+						prevElem = elem;
+					
+					//if a marble has been selected and then a space is selected	
+					}else if(prevElemCol){
+						
+						//same column
+						comparison(prevElemCol == elemCol, prevElemRow, elemRow, -2, 0);
+						comparison(prevElemCol == elemCol, prevElemRow, elemRow, 2, 0);
+						
+						
+						//same row
+						comparison(prevElemRow == elemRow, prevElemCol, elemCol, 0, -2);
+						comparison(prevElemRow == elemRow, prevElemCol, elemCol, 0, 2);
+						
+						
+						if (!midElem) {return 0; prevElemCol = 0;}
+						
+						//if mid marble is a marble and not a space
+						if(midElem[className].indexOf('m') != -1){
+							//convert mid marble in to space
+							midElem[className] = '';
+							prevElem[className] = '';
+							elem[className] = 's m';
+							
+							prevElemRow = elemRow;
+							prevElemCol = elemCol;
+							prevElem = elem;
+							counter++;
+							
+							//if complete
+							if (counter == 31){
+								alert('Done!!');
+							}
+						}
+					}
+
+				},
+			
+
+				createMarbles = function(num, row, col, numPerRow, offset){
+				
+					newRow = row;
+					newCol = col;
+				
+					for (var i = 1; i <num; i++) {	
+						newMarble = marble.cloneNode(true);
+					
+					
+						if ((i-1)%numPerRow == 0){
+							newMarble[style].marginLeft = offset + 'px';
+							newMarble[style].clear = 'left';
+							if(i!=1){
+								newRow = newRow+1;
+								newCol = col;	
+							}
+						}
+						newMarble.id = newRow+""+newCol;
+					
+						newMarble.addEventListener("click", clickMarble, 0);
+					
+						b[appendChild](newMarble);
+						newCol = newCol+1;
+					}
+				
+				}
+			
+			
+			
+			styleElem[appendChild](css);
+			b[appendChild](styleElem);
+			
+			marble[className] = 'm';
+			
+			createMarbles(7, 1, 3, 3, 88);
+			createMarbles(22, 3, 1, 7, 4);
+			createMarbles(7, 6, 3, 3, 88);
+			
+			doc[getElementById](44)[className] = '';
+			
+
+
+		})();
+		// end of submission //
+		</script> 
+	</body> 
+</html>
